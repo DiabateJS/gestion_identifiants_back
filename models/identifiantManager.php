@@ -11,6 +11,82 @@ class IdentifiantManager
 
     }
 
+    public function searchIdentifiantsByOptions($options){
+        try
+                {
+                    $search_key = $options["search_key"];
+                    $search_options = $options["search_options"];
+
+                    $identifiants = array(
+                      "site_web" => array(),
+                      "compte_messagerie" => array(),
+                      "application" => array(),
+                      "carte_bancaire" => array(),
+                      "serveur" => array()
+                    );
+
+                    //$search_options contient 'site_web'
+                    if (in_array("site_web",$search_options)){
+                        $identifiants["site_web"] = $this->searchSiteWebIdentifiants($search_key);
+                    }
+
+                    return $identifiants;
+
+                }
+                catch(Exception $e)
+                {
+                	$this->_msgError = "[CLS::IdentifiantManager][FCT::searchIdentifiantsByOptions] Erreur : ".$e->getMessage();
+
+                	return $identifiants;
+                }
+    }
+
+    public function searchSiteWebIdentifiants($search_key){
+          try
+          {
+              $sql_site_web = "select sw.id as id_ident,ti.libelle_ident as libelle,sw.login, sw.mdp, sw.commentaire,tsw.libelle_type,sw.lien_conn from site_web sw inner join type_identifiant ti on sw.id_type_identifiant = ti.id_ident inner join type_site_web tsw on sw.id_type_site_web = tsw.id_type where ti.libelle_ident like '%".$search_key."%'";
+
+              $bdMan = new BdManager();
+
+              $entetes = array("id_ident","libelle","login","mdp","commentaire","libelle_type","lien_conn");
+
+              $res = $bdMan->executeSelect($sql_site_web,$entetes);
+
+              $identifiants = array();
+
+              if (count($res) > 0)
+              {
+
+                  for ($i = 0 ; $i < count($res) ; $i++)
+                  {
+                      $currentIdent = array(
+                          "id_ident" => $res[$i]["id_ident"],
+                          "libelle" => $res[$i]["libelle"],
+                          "login" => $res[$i]["login"],
+                          "mdp" => $res[$i]["mdp"],
+                          "commentaire" => $res[$i]["commentaire"],
+                          "libelle_type" => $res[$i]["libelle_type"],
+                          "lien_conn" => $res[$i]["lien_conn"]
+                      );
+
+
+                      $identifiants[] = $currentIdent;
+
+                  }
+
+              }
+              else
+              {
+                  $this->_msgError = "[CLS::IdentifiantManager][FCT::searchSiteWebIdentifiants] Aucune données dans la table ! ";
+              }
+          } catch(Exception $e) {
+                $this->_msgError = "[CLS::IdentifiantManager][FCT::searchSiteWebIdentifiants] Erreur : ".$e->getMessage();
+                return $identifiants;
+          }
+
+          return $identifiants;
+    }
+
     public function getAllIdentifiants()
     {
         try
