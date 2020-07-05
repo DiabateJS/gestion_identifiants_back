@@ -156,11 +156,11 @@ class IdentifiantManager
     public function searchApplicationIdentifiants($search_key){
         try
         {
-          $sql_application = "select app.id_app, tident.id_ident, tident.libelle_ident, tapp.libelle_type_app as type_application, app.login, app.mdp, app.commentaire, app.version_app, app.cle_authen from application app inner join type_application tapp on app.id_type_app = tapp.id_type_app inner join type_identifiant tident on tident.id_ident = app.id_type where tident.libelle_ident like '%".$search_key."%'";
+          $sql_application = "select app.id_app, tident.id_ident, tident.libelle_ident as libelle, tapp.libelle_type_app as type_application, app.login, app.mdp, app.commentaire, app.version_app, app.cle_authen from application app inner join type_application tapp on app.id_type_app = tapp.id_type_app inner join type_identifiant tident on tident.id_ident = app.id_type where tident.libelle_ident like '%".$search_key."%'";
 
           $bdMan = new BdManager();
 
-          $entetes = array("id_ident","libelle_ident", "type_application", "login", "mdp", "commentaire", "version_app", "cle_authen");
+          $entetes = array("id_ident","libelle", "type_application", "login", "mdp", "commentaire", "version_app", "cle_authen");
 
           $res = $bdMan->executeSelect($sql_application,$entetes);
 
@@ -173,7 +173,7 @@ class IdentifiantManager
               {
                   $currentIdent = array(
                       "id_ident" => $res[$i]["id_ident"],
-                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "libelle" => $res[$i]["libelle"],
                       "type_application" => $res[$i]["type_application"],
                       "login" => $res[$i]["login"],
                       "mdp" => $res[$i]["mdp"],
@@ -202,11 +202,11 @@ class IdentifiantManager
     public function searchCarteBancaireIdentifiants($search_key){
         try
         {
-          $sql_carte_bancaire = "select ti.id_ident, ti.libelle_ident, cb.banque, cb.numero, cb.date_exp, cb.commentaire from carte_bancaire cb inner join type_identifiant ti on cb.id_type = ti.id_ident where ti.libelle_ident like '%".$search_key."%'";
+          $sql_carte_bancaire = "select ti.id_ident, ti.libelle_ident as libelle, cb.banque, cb.numero, cb.date_exp, cb.commentaire from carte_bancaire cb inner join type_identifiant ti on cb.id_type = ti.id_ident where ti.libelle_ident like '%".$search_key."%'";
 
           $bdMan = new BdManager();
 
-          $entetes = array("id_ident", "libelle_ident", "banque", "numero", "date_exp", "commentaire");
+          $entetes = array("id_ident", "libelle", "banque", "numero", "date_exp", "commentaire");
 
           $res = $bdMan->executeSelect($sql_carte_bancaire,$entetes);
 
@@ -219,7 +219,7 @@ class IdentifiantManager
               {
                   $currentIdent = array(
                       "id_ident" => $res[$i]["id_ident"],
-                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "libelle" => $res[$i]["libelle"],
                       "banque" => $res[$i]["banque"],
                       "numero" => $res[$i]["numero"],
                       "date_exp" => $res[$i]["date_exp"],
@@ -247,11 +247,11 @@ class IdentifiantManager
     public function searchServeurIdentifiants($search_key){
         try
         {
-          $sql_serveur = "select ti.id_ident, ti.libelle_ident, ts.libelle_type_serveur, s.login, s.mdp, s.commentaire, s.nom_os, s.version_os, s.adresse_ip, s.lien_serveur from serveur s inner join type_identifiant ti on s.id_type = ti.id_ident inner join type_serveur ts on s.id_type_serveur = ts.id_type_serveur where ti.libelle_ident like '%".$search_key."%'";
+          $sql_serveur = "select ti.id_ident, ti.libelle_ident as libelle, ts.libelle_type_serveur, s.login, s.mdp, s.commentaire, s.nom_os, s.version_os, s.adresse_ip, s.lien_serveur from serveur s inner join type_identifiant ti on s.id_type = ti.id_ident inner join type_serveur ts on s.id_type_serveur = ts.id_type_serveur where ti.libelle_ident like '%".$search_key."%'";
 
           $bdMan = new BdManager();
 
-          $entetes = array("id_ident", "libelle_ident", "libelle_type_serveur", "login", "mdp", "commentaire", "nom_os", "version_os", "adresse_ip", "lien_serveur");
+          $entetes = array("id_ident", "libelle", "libelle_type_serveur", "login", "mdp", "commentaire", "nom_os", "version_os", "adresse_ip", "lien_serveur");
 
           $res = $bdMan->executeSelect($sql_serveur,$entetes);
 
@@ -264,7 +264,7 @@ class IdentifiantManager
               {
                   $currentIdent = array(
                       "id_ident" => $res[$i]["id_ident"],
-                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "libelle" => $res[$i]["libelle"],
                       "libelle_type_serveur" => $res[$i]["libelle_type_serveur"],
                       "login" => $res[$i]["login"],
                       "mdp" => $res[$i]["mdp"],
