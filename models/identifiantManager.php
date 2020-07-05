@@ -31,6 +31,26 @@ class IdentifiantManager
                         $identifiants["site_web"] = $this->searchSiteWebIdentifiants($search_key);
                     }
 
+                    //$search_options contient 'messagerie'
+                    if (in_array("messagerie",$search_options)){
+                        $identifiants["messagerie"] = $this->searchMessagerieIdentifiants($search_key);
+                    }
+
+                    //$search_options contient 'application'
+                    if (in_array("application",$search_options)){
+                        $identifiants["application"] = $this->searchApplicationIdentifiants($search_key);
+                    }
+
+                    //$search_options contient 'carte_bancaire'
+                    if (in_array("carte_bancaire",$search_options)){
+                        $identifiants["carte_bancaire"] = $this->searchCarteBancaireIdentifiants($search_key);
+                    }
+
+                    //$search_options contient 'serveur'
+                    if (in_array("serveur",$search_options)){
+                        $identifiants["serveur"] = $this->searchServeurIdentifiants($search_key);
+                    }
+
                     return $identifiants;
 
                 }
@@ -86,6 +106,190 @@ class IdentifiantManager
           }
 
           return $identifiants;
+    }
+
+    public function searchMessagerieIdentifiants($search_key){
+          try
+          {
+              $sql_messagerie = "select ti.id_ident as id_ident,ti.libelle_ident as libelle,cm.nom_messagerie, cm.login, cm.mdp, cm.commentaire, cm.lien_conn from compte_messagerie cm inner join type_identifiant ti on cm.id_type = ti.id_ident where ti.libelle_ident like '%".$search_key."%'";
+
+              $bdMan = new BdManager();
+
+              $entetes = array("id_ident","libelle",'nom_messagerie',"login","mdp","commentaire","lien_conn");
+
+              $res = $bdMan->executeSelect($sql_messagerie,$entetes);
+
+              $identifiants = array();
+
+              if (count($res) > 0)
+              {
+
+                  for ($i = 0 ; $i < count($res) ; $i++)
+                  {
+                      $currentIdent = array(
+                          "id_ident" => $res[$i]["id_ident"],
+                          "libelle" => $res[$i]["libelle"],
+                          "nom_messagerie" => $res[$i]["nom_messagerie"],
+                          "login" => $res[$i]["login"],
+                          "mdp" => $res[$i]["mdp"],
+                          "commentaire" => $res[$i]["commentaire"],
+                          "lien_conn" => $res[$i]["lien_conn"]
+                      );
+
+
+                      $identifiants[] = $currentIdent;
+
+                  }
+
+              }
+              else
+              {
+                  $this->_msgError = "[CLS::IdentifiantManager][FCT::searchMessagerieIdentifiants] Aucune données dans la table ! ";
+              }
+          } catch(Exception $e) {
+                $this->_msgError = "[CLS::IdentifiantManager][FCT::searchMessagerieIdentifiants] Erreur : ".$e->getMessage();
+                return $identifiants;
+          }
+
+          return $identifiants;
+    }
+    public function searchApplicationIdentifiants($search_key){
+        try
+        {
+          $sql_application = "select app.id_app, tident.id_ident, tident.libelle_ident, tapp.libelle_type_app as type_application, app.login, app.mdp, app.commentaire, app.version_app, app.cle_authen from application app inner join type_application tapp on app.id_type_app = tapp.id_type_app inner join type_identifiant tident on tident.id_ident = app.id_type where tident.libelle_ident like '%".$search_key."%'";
+
+          $bdMan = new BdManager();
+
+          $entetes = array("id_ident","libelle_ident", "type_application", "login", "mdp", "commentaire", "version_app", "cle_authen");
+
+          $res = $bdMan->executeSelect($sql_application,$entetes);
+
+          $identifiants = array();
+
+          if (count($res) > 0)
+          {
+
+              for ($i = 0 ; $i < count($res) ; $i++)
+              {
+                  $currentIdent = array(
+                      "id_ident" => $res[$i]["id_ident"],
+                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "type_application" => $res[$i]["type_application"],
+                      "login" => $res[$i]["login"],
+                      "mdp" => $res[$i]["mdp"],
+                      "commentaire" => $res[$i]["commentaire"],
+                      "version_app" => $res[$i]["version_app"],
+                      "cle_authen" => $res[$i]["cle_authen"]
+                  );
+
+
+                  $identifiants[] = $currentIdent;
+
+              }
+
+          }
+          else
+          {
+              $this->_msgError = "[CLS::IdentifiantManager][FCT::searchApplicationIdentifiants] Aucune données dans la table ! ";
+          }
+      } catch(Exception $e) {
+            $this->_msgError = "[CLS::IdentifiantManager][FCT::searchApplicationIdentifiants] Erreur : ".$e->getMessage();
+            return $identifiants;
+      }
+      return $identifiants;
+    }
+
+    public function searchCarteBancaireIdentifiants($search_key){
+        try
+        {
+          $sql_carte_bancaire = "select ti.id_ident, ti.libelle_ident, cb.banque, cb.numero, cb.date_exp, cb.commentaire from carte_bancaire cb inner join type_identifiant ti on cb.id_type = ti.id_ident where ti.libelle_ident like '%".$search_key."%'";
+
+          $bdMan = new BdManager();
+
+          $entetes = array("id_ident", "libelle_ident", "banque", "numero", "date_exp", "commentaire");
+
+          $res = $bdMan->executeSelect($sql_carte_bancaire,$entetes);
+
+          $identifiants = array();
+
+          if (count($res) > 0)
+          {
+
+              for ($i = 0 ; $i < count($res) ; $i++)
+              {
+                  $currentIdent = array(
+                      "id_ident" => $res[$i]["id_ident"],
+                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "banque" => $res[$i]["banque"],
+                      "numero" => $res[$i]["numero"],
+                      "date_exp" => $res[$i]["date_exp"],
+                      "commentaire" => $res[$i]["commentaire"]
+                  );
+
+
+                  $identifiants[] = $currentIdent;
+
+              }
+
+          }
+          else
+          {
+              $this->_msgError = "[CLS::IdentifiantManager][FCT::searchCarteBancaireIdentifiants] Aucune données dans la table ! ";
+          }
+      } catch(Exception $e) {
+            $this->_msgError = "[CLS::IdentifiantManager][FCT::searchCarteBancaireIdentifiants] Erreur : ".$e->getMessage();
+            return $identifiants;
+      }
+      return $identifiants;
+
+    }
+
+    public function searchServeurIdentifiants($search_key){
+        try
+        {
+          $sql_serveur = "select ti.id_ident, ti.libelle_ident, ts.libelle_type_serveur, s.login, s.mdp, s.commentaire, s.nom_os, s.version_os, s.adresse_ip, s.lien_serveur from serveur s inner join type_identifiant ti on s.id_type = ti.id_ident inner join type_serveur ts on s.id_type_serveur = ts.id_type_serveur where ti.libelle_ident like '%".$search_key."%'";
+
+          $bdMan = new BdManager();
+
+          $entetes = array("id_ident", "libelle_ident", "libelle_type_serveur", "login", "mdp", "commentaire", "nom_os", "version_os", "adresse_ip", "lien_serveur");
+
+          $res = $bdMan->executeSelect($sql_serveur,$entetes);
+
+          $identifiants = array();
+
+          if (count($res) > 0)
+          {
+
+              for ($i = 0 ; $i < count($res) ; $i++)
+              {
+                  $currentIdent = array(
+                      "id_ident" => $res[$i]["id_ident"],
+                      "libelle_ident" => $res[$i]["libelle_ident"],
+                      "libelle_type_serveur" => $res[$i]["libelle_type_serveur"],
+                      "login" => $res[$i]["login"],
+                      "mdp" => $res[$i]["mdp"],
+                      "commentaire" => $res[$i]["commentaire"],
+                      "nom_os" => $res[$i]["nom_os"],
+                      "version_os" => $res[$i]["version_os"],
+                      "adresse_ip" => $res[$i]["adresse_ip"],
+                      "lien_serveur" => $res[$i]["lien_serveur"]
+                  );
+
+
+                  $identifiants[] = $currentIdent;
+
+              }
+
+          }
+          else
+          {
+              $this->_msgError = "[CLS::IdentifiantManager][FCT::searchCarteBancaireIdentifiants] Aucune données dans la table ! ";
+          }
+      } catch(Exception $e) {
+            $this->_msgError = "[CLS::IdentifiantManager][FCT::searchCarteBancaireIdentifiants] Erreur : ".$e->getMessage();
+            return $identifiants;
+      }
+      return $identifiants;
     }
 
     public function getAllIdentifiants()
