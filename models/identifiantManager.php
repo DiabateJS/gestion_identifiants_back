@@ -33,7 +33,7 @@ class IdentifiantManager
 
                     //$search_options contient 'messagerie'
                     if (in_array("messagerie",$search_options)){
-                        $identifiants["messagerie"] = $this->searchMessagerieIdentifiants($search_key);
+                        $identifiants["compte_messagerie"] = $this->searchMessagerieIdentifiants($search_key);
                     }
 
                     //$search_options contient 'application'
